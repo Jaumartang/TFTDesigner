@@ -1,0 +1,330 @@
+/* Reset i estils generals */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #34495e;
+    color: #ecf0f1;
+    line-height: 1.6;
+    padding: 20px;
+}
+
+/* Estructura principal */
+.app-container {
+    display: flex;
+    flex-direction: column;
+    max-width: 1200px;
+    margin: 0 auto;
+    background-color: #2c3e50;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
+}
+
+header {
+    background-color: #2c3e50;
+    padding: 15px 20px;
+}
+
+h1, h2 {
+    color: #ecf0f1;
+    margin-bottom: 15px;
+}
+
+h1 {
+    font-size: 1.5rem;
+    text-align: center;
+}
+
+h2 {
+    font-size: 1.2rem;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #7f8c8d;
+}
+
+/* Barra d'eines */
+.toolbar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    align-items: center;
+    justify-content: center;
+    padding: 10px 0;
+}
+
+.toolbar button, .toolbar select, .toolbar input {
+    height: 32px;
+    min-width: 32px;
+    padding: 0 10px;
+    background-color: #34495e;
+    color: #ecf0f1;
+    border: 1px solid #7f8c8d;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.toolbar button:hover, .toolbar select:hover {
+    background-color: #3d566e;
+}
+
+.toolbar button.active {
+    background-color: #3498db;
+    color: white;
+}
+
+.tool-button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+}
+
+.color-preview {
+    display: inline-block;
+    width: 16px;
+    height: 16px;
+    border: 1px solid #7f8c8d;
+    border-radius: 3px;
+}
+
+/* Contingut principal */
+.main-content {
+    display: flex;
+    flex: 1;
+    gap: 15px;
+    padding: 20px;
+    background-color: #34495e;
+}
+
+/* Panell d'elements */
+.elements-panel {
+    flex: 1;
+    min-width: 200px;
+    max-width: 250px;
+    background-color: #2c3e50;
+    padding: 15px;
+    border-radius: 5px;
+}
+
+#elements-list {
+    list-style-type: none;
+}
+
+#elements-list li {
+    padding: 8px 12px;
+    margin-bottom: 5px;
+    background-color: #34495e;
+    border-radius: 4px;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+#elements-list li:hover {
+    background-color: #3d566e;
+}
+
+#elements-list li.selected {
+    background-color: #2980b9;
+}
+
+.element-controls {
+    display: flex;
+    gap: 5px;
+}
+
+.element-controls button {
+    background: none;
+    border: none;
+    color: #ecf0f1;
+    cursor: pointer;
+    padding: 2px;
+    font-size: 0.8rem;
+}
+
+/* Canvas */
+.canvas-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+}
+
+.canvas-wrapper {
+    position: relative;
+    width: 240px;
+    height: 240px;
+    border-radius: 50%;
+    overflow: hidden;
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.5);
+    border: 8px solid #1a1a1a;
+}
+
+#preview-canvas {
+    background-color: #1a1a1a;
+    display: block;
+    cursor: crosshair;
+}
+
+.center-mark {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 2px;
+    height: 2px;
+    background-color: rgba(255, 255, 255, 0.5);
+    transform: translate(-50%, -50%);
+}
+
+.canvas-info {
+    font-size: 0.9rem;
+    color: #ecf0f1;
+}
+
+/* Panell de propietats */
+.properties-panel {
+    flex: 1;
+    min-width: 200px;
+    max-width: 250px;
+    background-color: #2c3e50;
+    padding: 15px;
+    border-radius: 5px;
+}
+
+#properties-form {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.property-group {
+    margin-bottom: 10px;
+}
+
+.form-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+}
+
+.form-row label {
+    margin-right: 10px;
+    font-size: 0.9rem;
+}
+
+.form-row input[type="number"],
+.form-row input[type="text"],
+.form-row select {
+    width: 70px;
+    padding: 5px;
+    background-color: #34495e;
+    color: #ecf0f1;
+    border: 1px solid #7f8c8d;
+    border-radius: 3px;
+}
+
+.form-row input[type="checkbox"] {
+    margin-left: auto;
+}
+
+.delete-btn {
+    width: 100%;
+    padding: 8px;
+    margin-top: 15px;
+    background-color: #e74c3c;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+}
+
+.delete-btn:hover {
+    background-color: #c0392b;
+}
+
+/* Panell de codi */
+.code-panel {
+    background-color: #2c3e50;
+    padding: 20px;
+    border-top: 1px solid #7f8c8d;
+}
+
+.code-panel h2 {
+    margin-bottom: 10px;
+}
+
+.code-panel button {
+    padding: 8px 15px;
+    margin-right: 10px;
+    margin-bottom: 15px;
+    background-color: #3498db;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.code-panel button:hover {
+    background-color: #2980b9;
+}
+
+#generated-code {
+    padding: 15px;
+    border-radius: 5px;
+    overflow-x: auto;
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 0.9rem;
+    line-height: 1.5;
+    white-space: pre-wrap;
+}
+
+/* Responsiu */
+@media (max-width: 768px) {
+    .main-content {
+        flex-direction: column;
+    }
+    
+    .elements-panel, .properties-panel {
+        max-width: 100%;
+    }
+    
+    .canvas-container {
+        order: -1;
+        margin-bottom: 20px;
+    }
+}
+
+.tool-group {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.tool-group label {
+    font-size: 0.9rem;
+    white-space: nowrap;
+}
+
+.color-select {
+    height: 32px;
+    padding: 0 8px;
+    background-color: #34495e;
+    color: #ecf0f1;
+    border: 1px solid #7f8c8d;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.color-select:hover {
+    background-color: #3d566e;
+}

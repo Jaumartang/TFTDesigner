@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="ca">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dissenyador TFT 240x240 Rodona</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+    <div class="app-container">
+        <header>
+            <h1>Dissenyador TFT Rodona 240x240</h1>
+            <div class="toolbar">
+                <button id="btn-line" title="Línia"><i class="fas fa-slash"></i></button>
+                <button id="btn-rect" title="Rectangle"><i class="fas fa-square"></i></button>
+                <button id="btn-circle" title="Cercle"><i class="fas fa-circle"></i></button>
+                <button id="btn-triangle" title="Triangle"><i class="fas fa-play"></i></button>
+                <button id="btn-text" title="Text"><i class="fas fa-font"></i></button>
+                <button id="btn-arc" title="Arc"><i class="fas fa-circle-notch"></i></button>
+                <button id="btn-delete" title="Eliminar"><i class="fas fa-trash"></i></button>
+                
+                <select id="color-select" title="Color">
+                    <option value="0x0000" style="background-color: #000000; color: white;">Negre</option>
+                    <option value="0xFFFF" style="background-color: #FFFFFF; color: black;">Blanc</option>
+                    <option value="0xF800" style="background-color: #FF0000; color: white;" selected>Vermell</option>
+                    <option value="0x07E0" style="background-color: #00FF00; color: black;">Verd</option>
+                    <option value="0x001F" style="background-color: #0000FF; color: white;">Blau</option>
+                    <option value="0xFFE0" style="background-color: #FFFF00; color: black;">Groc</option>
+                </select>
+                
+                <input type="number" id="stroke-width" min="1" max="20" value="1" title="Gruix">
+                
+                <select id="font-size-select" title="Mida de font">
+                    <option value="1">1 (8px)</option>
+                    <option value="2">2 (16px)</option>
+                    <option value="4">4 (32px)</option>
+                </select>
+                
+                <div class="tool-group">
+                    <label for="bg-color-select">Fons:</label>
+                    <select id="bg-color-select" class="color-select">
+                        <!-- Opcions s'omplen amb JavaScript -->
+                    </select>
+                </div>
+            </div>
+        </header>
+
+        <div class="main-content">
+            <div class="elements-panel">
+                <h2>Elements</h2>
+                <ul id="elements-list"></ul>
+            </div>
+
+            <div class="canvas-container">
+                <div class="canvas-wrapper">
+                    <canvas id="preview-canvas" width="240" height="240"></canvas>
+                    <div class="center-mark"></div>
+                </div>
+                <div class="canvas-info">
+                    <span id="cursor-pos">X: 0, Y: 0</span>
+                </div>
+            </div>
+
+            <div class="properties-panel">
+                <h2>Propietats</h2>
+                <div id="properties-form">
+                    <p>Selecciona un element per editar-ne les propietats</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="code-panel">
+            <h2>Codi Arduino</h2>
+            <button id="btn-generate-code">Generar Codi</button>
+            <button id="btn-copy-code">Copiar Codi</button>
+            <pre><code id="generated-code">// El codi apareixerà aquí</code></pre>
+        </div>
+    </div>
+
+    <script src="scripts.js"></script>
+</body>
+</html>
