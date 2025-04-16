@@ -1,48 +1,50 @@
 <!DOCTYPE html>
-<html lang="ca">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dissenyador TFT 240x240 Rodona</title>
+    <title>TFT Designer</title>
     <link rel="stylesheet" href="styles.css">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
 </head>
 <body>
     <div class="app-container">
         <header>
-            <h1>Dissenyador TFT Rodona 240x240</h1>
+            <h1>TFT Editor for GC9A01 1.28" Round Display ESP8266</h1>
             <div class="toolbar">
-                <button id="btn-line" title="Línia"><i class="fas fa-slash"></i></button>
+                <button id="btn-line" title="Line"><i class="fas fa-slash"></i></button>
                 <button id="btn-rect" title="Rectangle"><i class="fas fa-square"></i></button>
-                <button id="btn-circle" title="Cercle"><i class="fas fa-circle"></i></button>
+                <button id="btn-circle" title="Circle"><i class="fas fa-circle"></i></button>
                 <button id="btn-triangle" title="Triangle"><i class="fas fa-play"></i></button>
                 <button id="btn-text" title="Text"><i class="fas fa-font"></i></button>
                 <button id="btn-arc" title="Arc"><i class="fas fa-circle-notch"></i></button>
-                <button id="btn-delete" title="Eliminar"><i class="fas fa-trash"></i></button>
+                <button id="btn-delete" title="Delete"><i class="fas fa-trash"></i></button>
                 
                 <select id="color-select" title="Color">
-                    <option value="0x0000" style="background-color: #000000; color: white;">Negre</option>
-                    <option value="0xFFFF" style="background-color: #FFFFFF; color: black;">Blanc</option>
-                    <option value="0xF800" style="background-color: #FF0000; color: white;" selected>Vermell</option>
-                    <option value="0x07E0" style="background-color: #00FF00; color: black;">Verd</option>
-                    <option value="0x001F" style="background-color: #0000FF; color: white;">Blau</option>
-                    <option value="0xFFE0" style="background-color: #FFFF00; color: black;">Groc</option>
+                    <option value="0x0000" style="background-color: #000000; color: white;">Black</option>
+                    <option value="0xFFFF" style="background-color: #FFFFFF; color: black;">White</option>
+                    <option value="0xF800" style="background-color: #FF0000; color: white;" selected>Red</option>
+                    <option value="0x07E0" style="background-color: #00FF00; color: black;">Green</option>
+                    <option value="0x001F" style="background-color: #0000FF; color: white;">Blue</option>
+                    <option value="0xFFE0" style="background-color: #FFFF00; color: black;">Yellow</option>
                 </select>
                 
-                <input type="number" id="stroke-width" min="1" max="20" value="1" title="Gruix">
                 
-                <select id="font-size-select" title="Mida de font">
+                <select id="font-size-select" title="Font Size">
                     <option value="1">1 (8px)</option>
                     <option value="2">2 (16px)</option>
                     <option value="4">4 (32px)</option>
                 </select>
                 
                 <div class="tool-group">
-                    <label for="bg-color-select">Fons:</label>
+                    <label for="bg-color-select">Background:</label>
                     <select id="bg-color-select" class="color-select">
-                        <!-- Opcions s'omplen amb JavaScript -->
+                        <!-- Options are filled with JavaScript -->
                     </select>
                 </div>
+                <button id="help-button" class="tool-button" onclick="window.open('help.html', '_blank')">
+                    <i class="fas fa-question-circle"></i> Help
+                  </button>
             </div>
         </header>
 
@@ -63,21 +65,38 @@
             </div>
 
             <div class="properties-panel">
-                <h2>Propietats</h2>
+                <h2>Properties</h2>
                 <div id="properties-form">
-                    <p>Selecciona un element per editar-ne les propietats</p>
+                    <p>Select an element to edit its properties</p>
                 </div>
             </div>
         </div>
 
         <div class="code-panel">
-            <h2>Codi Arduino</h2>
-            <button id="btn-generate-code">Generar Codi</button>
-            <button id="btn-copy-code">Copiar Codi</button>
-            <pre><code id="generated-code">// El codi apareixerà aquí</code></pre>
+            <h2>Arduino Code</h2>
+            <button id="btn-generate-code">Generate Code</button>
+            <button id="btn-copy-code">Copy Code</button>
+            <pre><code id="generated-code">// The code will appear here</code></pre>
         </div>
+        <footer class="footer">
+            <div class="footer-content">
+              <p>© 2025 <a href="https://jaumemarti.info" target="_blank">jaumemarti.info</a> - All rights reserved</p>
+              <div class="footer-links">
+                <a href="https://github.com/Jaumartang/TFTDesigner" target="_blank">
+                  <i class="fab fa-github"></i> GitHub Project
+                </a>
+                <a href="help.html" target="_blank">
+                  <i class="fas fa-question-circle"></i> Help
+                </a>
+              </div>
+            </div>
+          </footer>
+          
+          <!-- Font Awesome for icons -->
+          <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     </div>
-
+  
     <script src="scripts.js"></script>
 </body>
+
 </html>

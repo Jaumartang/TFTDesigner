@@ -1,21 +1,20 @@
 // Configuració global
 const Config = {
     canvasSize: 240,
-    defaultColor: '0xF800', // Vermell en format RGB565
-    defaultStrokeWidth: 1,
-    defaultBackground: '0x0000', // Negre en format RGB565
+    defaultColor: '0xF800', // Red in RGB565 format
+    defaultBackground: '0x0000', // Black in RGB565 format
     defaultFontSize: 1,
     availableColors: {
-        'Negre': '0x0000',
-        'Blanc': '0xFFFF',
-        'Vermell': '0xF800',
-        'Verd': '0x07E0',
-        'Blau': '0x001F',
-        'Groc': '0xFFE0',
-        'Cian': '0x07FF',
+        'Black': '0x0000',
+        'White': '0xFFFF',
+        'Red': '0xF800',
+        'Green': '0x07E0',
+        'Blue': '0x001F',
+        'Yellow': '0xFFE0',
+        'Cyan': '0x07FF',
         'Magenta': '0xF81F'
     },
-    availableFontSizes: [1, 2, 4, 6, 7, 8] // Mides de font disponibles
+    availableFontSizes: [1, 2, 4, 6, 7, 8]
 };
 
 // Estat de l'aplicació
@@ -26,7 +25,6 @@ const AppState = {
     currentTool: null,
     startPos: { x: 0, y: 0 },
     currentColor: Config.defaultColor,
-    currentStrokeWidth: Config.defaultStrokeWidth,
     backgroundColor: Config.defaultBackground,
     currentFontSize: Config.defaultFontSize
 };
@@ -40,7 +38,6 @@ const DOM = {
     generatedCode: document.getElementById('generated-code'),
     cursorPos: document.getElementById('cursor-pos'),
     colorSelect: document.getElementById('color-select'),
-    strokeWidth: document.getElementById('stroke-width'),
     bgColorSelect: document.getElementById('bg-color-select'),
     fontSizeSelect: document.getElementById('font-size-select'),
     tools: {
@@ -65,26 +62,19 @@ function init() {
     DOM.canvas.height = Config.canvasSize;
     DOM.ctx = DOM.canvas.getContext('2d');
     
-    // Configura el fons inicial
-    DOM.ctx.fillStyle = getColorAsHex(Config.defaultBackground);
-    DOM.ctx.fillRect(0, 0, Config.canvasSize, Config.canvasSize);
-    
     initSelectors();
     setupEventListeners();
+    redrawCanvas();
     setTool('line');
 }
 
-// Funció per inicialitzar selectors
 function initSelectors() {
-    // Selector de color principal
     const colorSelect = DOM.colorSelect;
     colorSelect.innerHTML = '';
     
-    // Selector de color de fons
     const bgColorSelect = DOM.bgColorSelect;
     bgColorSelect.innerHTML = '';
     
-    // Afegir opcions als selectors
     Object.entries(Config.availableColors).forEach(([name, value]) => {
         const option1 = createColorOption(name, value);
         colorSelect.appendChild(option1);
@@ -93,15 +83,12 @@ function initSelectors() {
         bgColorSelect.appendChild(option2);
     });
     
-    // Establir valors per defecte
     colorSelect.value = Config.defaultColor;
     bgColorSelect.value = Config.defaultBackground;
     
-    // Inicialitzar selector de mides de font
     initFontSizeSelector();
 }
 
-// Funció auxiliar per crear opcions de color
 function createColorOption(name, value) {
     const option = document.createElement('option');
     option.value = value;
@@ -111,7 +98,6 @@ function createColorOption(name, value) {
     return option;
 }
 
-// Funció per inicialitzar mides de font
 function initFontSizeSelector() {
     const fontSizeSelect = DOM.fontSizeSelect;
     fontSizeSelect.innerHTML = '';
@@ -126,14 +112,11 @@ function initFontSizeSelector() {
     fontSizeSelect.value = AppState.currentFontSize;
 }
 
-// Configuració d'event listeners
 function setupEventListeners() {
-    // Eines
     Object.keys(DOM.tools).forEach(tool => {
         DOM.tools[tool].addEventListener('click', () => setTool(tool));
     });
 
-    // Canvas
     DOM.canvas.addEventListener('mousedown', startDrawing);
     DOM.canvas.addEventListener('mousemove', e => {
         draw(e);
@@ -142,26 +125,17 @@ function setupEventListeners() {
     DOM.canvas.addEventListener('mouseup', endDrawing);
     DOM.canvas.addEventListener('mouseout', endDrawing);
 
-    // Propietats
     DOM.colorSelect.addEventListener('change', handleColorChange);
-    DOM.strokeWidth.addEventListener('input', handleStrokeWidthChange);
     DOM.fontSizeSelect.addEventListener('change', handleFontSizeChange);
     DOM.bgColorSelect.addEventListener('change', handleBackgroundColorChange);
 
-    // Generació de codi
     document.getElementById('btn-generate-code').addEventListener('click', generateCode);
     document.getElementById('btn-copy-code').addEventListener('click', copyCode);
 }
 
-// Manejadors d'esdeveniments
 function handleColorChange(e) {
     AppState.currentColor = e.target.value;
     updateSelectedElementProperty('color', AppState.currentColor);
-}
-
-function handleStrokeWidthChange(e) {
-    AppState.currentStrokeWidth = parseInt(e.target.value);
-    updateSelectedElementProperty('strokeWidth', AppState.currentStrokeWidth);
 }
 
 function handleFontSizeChange(e) {
@@ -169,28 +143,17 @@ function handleFontSizeChange(e) {
     updateSelectedElementProperty('size', AppState.currentFontSize);
 }
 
-
 function handleBackgroundColorChange(e) {
     AppState.backgroundColor = e.target.value;
-    
-    // Força un redibuixat immediat
-    DOM.ctx.fillStyle = getColorAsHex(AppState.backgroundColor);
-    DOM.ctx.fillRect(0, 0, Config.canvasSize, Config.canvasSize);
-    
-    // Redibuixa els elements si n'hi ha
-    if (AppState.elements.length > 0) {
-        redrawCanvas();
-    }
+    redrawCanvas();
 }
 
-// Convertir color RGB565 a HEX
 function getColorAsHex(rgb565) {
     const value = parseInt(rgb565.substring(2), 16);
     const r = (value >> 11) & 0x1F;
     const g = (value >> 5) & 0x3F;
     const b = value & 0x1F;
     
-    // Escalar a 8 bits
     const r8 = (r * 527 + 23) >> 6;
     const g8 = (g * 259 + 33) >> 6;
     const b8 = (b * 527 + 23) >> 6;
@@ -198,14 +161,12 @@ function getColorAsHex(rgb565) {
     return `#${((r8 << 16) | (g8 << 8) | b8).toString(16).padStart(6, '0')}`;
 }
 
-// Eines
 function setTool(tool) {
     Object.values(DOM.tools).forEach(btn => btn.classList.remove('active'));
     if (tool) DOM.tools[tool].classList.add('active');
     AppState.currentTool = tool;
 }
 
-// Dibuix
 function startDrawing(e) {
     if (!AppState.currentTool) return;
 
@@ -241,7 +202,7 @@ function draw(e) {
     const { ctx } = DOM;
     ctx.strokeStyle = getColorAsHex(AppState.currentColor);
     ctx.fillStyle = getColorAsHex(AppState.currentColor);
-    ctx.lineWidth = AppState.currentStrokeWidth;
+    ctx.lineWidth = 1;
 
     const drawFunctions = {
         line: () => {
@@ -311,11 +272,9 @@ function endDrawing(e) {
     redrawCanvas();
 }
 
-// Creació d'elements
 function createElement(type, startPos, endPos) {
     const commonProps = {
         color: AppState.currentColor,
-        strokeWidth: AppState.currentStrokeWidth,
         filled: false
     };
 
@@ -357,20 +316,21 @@ function createElement(type, startPos, endPos) {
                 y3: endPos.y,
                 ...commonProps
             };
-        case 'arc':
-            const radius = Math.round(calculateDistance(startPos, endPos));
-            const startAngle = Math.atan2(startPos.y - startPos.y, startPos.x - startPos.x);
-            const endAngle = Math.atan2(endPos.y - startPos.y, endPos.x - startPos.x);
-            
-            return {
-                type: 'arc',
-                x: startPos.x,
-                y: startPos.y,
-                radius: radius,
-                startAngle: startAngle,
-                endAngle: endAngle,
-                ...commonProps
-            };
+            case 'arc':
+                const radius = Math.round(calculateDistance(startPos, endPos));
+                // Calculem angles correctament
+                const startAngle = Math.atan2(startPos.y - endPos.y, startPos.x - endPos.x);
+                const endAngle = Math.atan2(endPos.y - startPos.y, endPos.x - startPos.x);
+                
+                return {
+                    type: 'arc',
+                    x: startPos.x,
+                    y: startPos.y,
+                    radius: radius,
+                    startAngle: startAngle,
+                    endAngle: endAngle,
+                    ...commonProps
+                };
         default:
             return null;
     }
@@ -394,18 +354,14 @@ function createTextElement(pos) {
     }
 }
 
-// Funcions de dibuix principals
 function redrawCanvas() {
     const { ctx } = DOM;
     
-    // 1. Neteja tot el canvas (sense màscara)
     ctx.clearRect(0, 0, Config.canvasSize, Config.canvasSize);
     
-    // 2. Dibuixa el fons complet (sense màscara)
     ctx.fillStyle = getColorAsHex(AppState.backgroundColor);
     ctx.fillRect(0, 0, Config.canvasSize, Config.canvasSize);
     
-    // 3. Aplica la màscara SOLS per als elements
     ctx.save();
     ctx.beginPath();
     ctx.arc(
@@ -417,9 +373,7 @@ function redrawCanvas() {
     );
     ctx.clip();
     
-    // 4. Dibuixa tots els elements dins de la màscara
     AppState.elements.forEach(element => drawElement(element));
-    
     ctx.restore();
 }
 
@@ -427,7 +381,7 @@ function drawElement(element) {
     const { ctx } = DOM;
     ctx.strokeStyle = getColorAsHex(element.color);
     ctx.fillStyle = getColorAsHex(element.color);
-    ctx.lineWidth = element.strokeWidth || 1;
+    ctx.lineWidth = 1;
 
     switch (element.type) {
         case 'line':
@@ -457,26 +411,28 @@ function drawElement(element) {
             element.filled ? ctx.fill() : ctx.stroke();
             break;
         case 'text':
-            const fontSize = element.size * 8; // Aproximació per a la previsualització
+            const fontSize = element.size * 8;
             ctx.font = `${fontSize}px Arial`;
             ctx.textBaseline = 'top';
             ctx.fillText(element.text, element.x, element.y);
             break;
         case 'arc':
-            ctx.beginPath();
-            ctx.arc(
-                element.x, 
-                element.y, 
-                element.radius, 
-                element.startAngle, 
-                element.endAngle
-            );
-            ctx.stroke();
-            break;
+                ctx.beginPath();
+                // Convertim radians a graus (180/Math.PI)
+                const startDeg = element.startAngle * (180/Math.PI);
+                const endDeg = element.endAngle * (180/Math.PI);
+                ctx.arc(
+                    element.x, 
+                    element.y, 
+                    element.radius, 
+                    startDeg, 
+                    endDeg
+                );
+                ctx.stroke();
+                break;
     }
 }
 
-// Gestió d'elements
 function updateElementsList() {
     DOM.elementsList.innerHTML = '';
     
@@ -550,7 +506,6 @@ function deleteElementAtPosition(pos) {
 }
 
 function findElementAtPosition(pos) {
-    // Verificar si el punt està dins l'àrea circular
     const center = { x: Config.canvasSize / 2, y: Config.canvasSize / 2 };
     const radius = Config.canvasSize / 2;
     if (calculateDistance(pos, center) > radius) return -1;
@@ -562,7 +517,7 @@ function findElementAtPosition(pos) {
             pos, 
             { x: element.x1, y: element.y1 }, 
             { x: element.x2, y: element.y2 }, 
-            element.strokeWidth + 2
+            3 // Marge de selecció fix
         )) return i;
         
         if (element.type === 'rect' && 
@@ -571,8 +526,8 @@ function findElementAtPosition(pos) {
         
         if (element.type === 'circle') {
             const distance = calculateDistance(pos, { x: element.x, y: element.y });
-            if (distance <= element.radius + element.strokeWidth && 
-                distance >= element.radius - element.strokeWidth) return i;
+            if (distance <= element.radius + 3 && // Marge de selecció fix
+                distance >= element.radius - 3) return i;
         }
         
         if (element.type === 'triangle' && 
@@ -593,8 +548,8 @@ function findElementAtPosition(pos) {
         if (element.type === 'arc') {
             const distance = calculateDistance(pos, { x: element.x, y: element.y });
             const angle = Math.atan2(pos.y - element.y, pos.x - element.x);
-            if (distance <= element.radius + element.strokeWidth && 
-                distance >= element.radius - element.strokeWidth &&
+            if (distance <= element.radius + 3 && // Marge de selecció fix
+                distance >= element.radius - 3 &&
                 angle >= element.startAngle && angle <= element.endAngle) return i;
         }
     }
@@ -602,7 +557,6 @@ function findElementAtPosition(pos) {
     return -1;
 }
 
-// Funcions d'utilitat
 function getCanvasPosition(e) {
     const rect = DOM.canvas.getBoundingClientRect();
     return {
@@ -632,24 +586,20 @@ function isPointNearLine(point, lineStart, lineEnd, tolerance) {
 }
 
 function isPointInTriangle(p, p1, p2, p3) {
-    // Calcular vectors
     const v0 = [p3.x - p1.x, p3.y - p1.y];
     const v1 = [p2.x - p1.x, p2.y - p1.y];
     const v2 = [p.x - p1.x, p.y - p1.y];
 
-    // Calcular productes punt
     const dot00 = v0[0] * v0[0] + v0[1] * v0[1];
     const dot01 = v0[0] * v1[0] + v0[1] * v1[1];
     const dot02 = v0[0] * v2[0] + v0[1] * v2[1];
     const dot11 = v1[0] * v1[0] + v1[1] * v1[1];
     const dot12 = v1[0] * v2[0] + v1[1] * v2[1];
 
-    // Calcular coordenades baricèntriques
     const invDenom = 1 / (dot00 * dot11 - dot01 * dot01);
     const u = (dot11 * dot02 - dot01 * dot12) * invDenom;
     const v = (dot00 * dot12 - dot01 * dot02) * invDenom;
 
-    // Comprovar si el punt està al triangle
     return (u >= 0) && (v >= 0) && (u + v < 1);
 }
 
@@ -658,7 +608,6 @@ function updateCursorPosition(e) {
     DOM.cursorPos.textContent = `X: ${Math.round(pos.x)}, Y: ${Math.round(pos.y)}`;
 }
 
-// Propietats de l'element
 function showPropertiesForm(element) {
     DOM.propertiesForm.innerHTML = '';
     
@@ -670,7 +619,6 @@ function showPropertiesForm(element) {
     const form = document.createElement('div');
     form.className = 'properties-form-content';
     
-    // Propietats comunes
     const colorSelect = document.createElement('select');
     colorSelect.id = 'prop-color';
     for (const [name, value] of Object.entries(Config.availableColors)) {
@@ -690,7 +638,6 @@ function showPropertiesForm(element) {
         </div>
     `;
     
-    // Propietats específiques
     if (element.type === 'line') {
         form.innerHTML += `
             <div class="form-row">
@@ -708,10 +655,6 @@ function showPropertiesForm(element) {
             <div class="form-row">
                 <label>Y2:</label>
                 <input type="number" id="prop-y2" value="${element.y2}" min="0" max="240">
-            </div>
-            <div class="form-row">
-                <label>Gruix:</label>
-                <input type="number" id="prop-stroke" value="${element.strokeWidth}" min="1" max="20">
             </div>
         `;
     } else if (element.type === 'rect') {
@@ -733,10 +676,6 @@ function showPropertiesForm(element) {
                 <input type="number" id="prop-height" value="${element.height}" min="1" max="240">
             </div>
             <div class="form-row">
-                <label>Gruix:</label>
-                <input type="number" id="prop-stroke" value="${element.strokeWidth}" min="1" max="20">
-            </div>
-            <div class="form-row">
                 <label>Omplert:</label>
                 <input type="checkbox" id="prop-filled" ${element.filled ? 'checked' : ''}>
             </div>
@@ -754,10 +693,6 @@ function showPropertiesForm(element) {
             <div class="form-row">
                 <label>Radi:</label>
                 <input type="number" id="prop-radius" value="${element.radius}" min="1" max="120">
-            </div>
-            <div class="form-row">
-                <label>Gruix:</label>
-                <input type="number" id="prop-stroke" value="${element.strokeWidth}" min="1" max="20">
             </div>
             <div class="form-row">
                 <label>Omplert:</label>
@@ -789,10 +724,6 @@ function showPropertiesForm(element) {
             <div class="form-row">
                 <label>Y3:</label>
                 <input type="number" id="prop-y3" value="${element.y3}" min="0" max="240">
-            </div>
-            <div class="form-row">
-                <label>Gruix:</label>
-                <input type="number" id="prop-stroke" value="${element.strokeWidth}" min="1" max="20">
             </div>
             <div class="form-row">
                 <label>Omplert:</label>
@@ -840,14 +771,9 @@ function showPropertiesForm(element) {
                 <label>Angle Fi (rad):</label>
                 <input type="number" id="prop-end-angle" value="${element.endAngle.toFixed(6)}" step="0.01">
             </div>
-            <div class="form-row">
-                <label>Gruix:</label>
-                <input type="number" id="prop-stroke" value="${element.strokeWidth}" min="1" max="20">
-            </div>
         `;
     }
     
-    // Botó d'eliminar
     const deleteBtn = document.createElement('button');
     deleteBtn.className = 'delete-btn';
     deleteBtn.innerHTML = '<i class="fas fa-trash"></i> Eliminar element';
@@ -864,7 +790,6 @@ function showPropertiesForm(element) {
     form.appendChild(deleteBtn);
     DOM.propertiesForm.appendChild(form);
     
-    // Afegir event listeners als inputs
     form.querySelectorAll('input, select').forEach(input => {
         input.addEventListener('change', updateElementProperties);
     });
@@ -876,28 +801,23 @@ function updateElementProperties() {
     const element = AppState.elements[AppState.selectedIndex];
     const form = DOM.propertiesForm.querySelector('.properties-form-content');
     
-    // Actualitzar propietats comunes
     element.color = form.querySelector('#prop-color').value;
     
-    // Actualitzar propietats específiques
     if (element.type === 'line') {
         element.x1 = parseInt(form.querySelector('#prop-x1').value);
         element.y1 = parseInt(form.querySelector('#prop-y1').value);
         element.x2 = parseInt(form.querySelector('#prop-x2').value);
         element.y2 = parseInt(form.querySelector('#prop-y2').value);
-        element.strokeWidth = parseInt(form.querySelector('#prop-stroke').value);
     } else if (element.type === 'rect') {
         element.x = parseInt(form.querySelector('#prop-x').value);
         element.y = parseInt(form.querySelector('#prop-y').value);
         element.width = parseInt(form.querySelector('#prop-width').value);
         element.height = parseInt(form.querySelector('#prop-height').value);
-        element.strokeWidth = parseInt(form.querySelector('#prop-stroke').value);
         element.filled = form.querySelector('#prop-filled').checked;
     } else if (element.type === 'circle') {
         element.x = parseInt(form.querySelector('#prop-x').value);
         element.y = parseInt(form.querySelector('#prop-y').value);
         element.radius = parseInt(form.querySelector('#prop-radius').value);
-        element.strokeWidth = parseInt(form.querySelector('#prop-stroke').value);
         element.filled = form.querySelector('#prop-filled').checked;
     } else if (element.type === 'triangle') {
         element.x1 = parseInt(form.querySelector('#prop-x1').value);
@@ -906,7 +826,6 @@ function updateElementProperties() {
         element.y2 = parseInt(form.querySelector('#prop-y2').value);
         element.x3 = parseInt(form.querySelector('#prop-x3').value);
         element.y3 = parseInt(form.querySelector('#prop-y3').value);
-        element.strokeWidth = parseInt(form.querySelector('#prop-stroke').value);
         element.filled = form.querySelector('#prop-filled').checked;
     } else if (element.type === 'text') {
         element.x = parseInt(form.querySelector('#prop-x').value);
@@ -919,7 +838,17 @@ function updateElementProperties() {
         element.radius = parseInt(form.querySelector('#prop-radius').value);
         element.startAngle = parseFloat(form.querySelector('#prop-start-angle').value);
         element.endAngle = parseFloat(form.querySelector('#prop-end-angle').value);
-        element.strokeWidth = parseInt(form.querySelector('#prop-stroke').value);
+    }
+    else if (element.type === 'arc') {
+        element.startAngle = parseFloat(form.querySelector('#prop-start-angle').value);
+        element.endAngle = parseFloat(form.querySelector('#prop-end-angle').value);
+        
+        // Normalitza angles
+        if (element.startAngle > element.endAngle) {
+            const temp = element.startAngle;
+            element.startAngle = element.endAngle;
+            element.endAngle = temp;
+        }
     }
     
     redrawCanvas();
@@ -931,21 +860,36 @@ function updateSelectedElementProperty(prop, value) {
         redrawCanvas();
     }
 }
-
-// Generació de codi
 function generateCode() {
     let code = `#include <TFT_eSPI.h>\n`;
     code += `TFT_eSPI tft = TFT_eSPI();\n\n`;
+    
+    // Improved function for arcs
+    if (AppState.elements.some(e => e.type === 'arc')) {
+    code += `void drawArc(int x, int y, int radius, float startAngle, float endAngle, uint16_t color) {\n`;
+    code += `  if (startAngle > endAngle) {\n`;
+    code += `    float temp = startAngle;\n`;
+    code += `    startAngle = endAngle;\n`;
+    code += `    endAngle = temp;\n`;
+    code += `  }\n`;
+    code += `  float step = 0.05; // Arc precision\n`;
+    code += `  for (float angle = startAngle; angle <= endAngle; angle += step) {\n`;
+    code += `    int px = x + radius * cos(angle);\n`;
+    code += `    int py = y + radius * sin(angle);\n`;
+    code += `    tft.drawPixel(px, py, color);\n`;
+    code += `  }\n`;
+    code += `  // Draw the last point to ensure the arc ends exactly where it should\n`;
+    code += `  int px = x + radius * cos(endAngle);\n`;
+    code += `  int py = y + radius * sin(endAngle);\n`;
+    code += `  tft.drawPixel(px, py, color);\n`;
+    code += `}\n\n`;
+    }
     code += `void setup() {\n`;
     code += `  tft.init();\n`;
-    code += `  tft.setRotation(1); // Ajusta segons la teva pantalla\n`;
+    code += `  tft.setRotation(1); // Adjust according to your screen\n`;
     code += `  tft.fillScreen(${AppState.backgroundColor});\n`;
-    code += `  drawElements();\n`;
-    code += `}\n\n`;
-    code += `void loop() {\n`;
-    code += `  // El teu codi aquí\n`;
-    code += `}\n\n`;
-    code += `void drawElements() {\n`;
+    code += `  \n`;
+    code += `  // Draw elements\n`;
     
     AppState.elements.forEach(element => {
         switch (element.type) {
@@ -980,56 +924,48 @@ function generateCode() {
                 code += `  tft.print("${element.text.replace(/"/g, '\\"')}");\n`;
                 break;
             case 'arc':
-                code += `  drawArc(${element.x}, ${element.y}, ${element.radius}, ${element.startAngle.toFixed(6)}, ${element.endAngle.toFixed(6)}, ${element.color});\n`;
+                code += `  drawArc(${element.x}, ${element.y}, ${element.radius}, ${element.startAngle}, ${element.endAngle}, ${element.color});\n`;;
                 break;
         }
     });
     
+    code += `}\n\n`;
+    code += `void loop() {\n`;
+    code += `  // Your code can be added here\n`;
+    code += `  // delay(100); // Example: small delay to reduce CPU usage\n`;
     code += `}\n`;
-    
-    // Afegir funció drawArc si hi ha elements de tipus arc
-    if (AppState.elements.some(e => e.type === 'arc')) {
-        code += `\nvoid drawArc(int x, int y, int radius, float startAngle, float endAngle, uint16_t color) {\n`;
-        code += `  float angle = startAngle;\n`;
-        code += `  while (angle <= endAngle) {\n`;
-        code += `    int px = x + radius * cos(angle);\n`;
-        code += `    int py = y + radius * sin(angle);\n`;
-        code += `    tft.drawPixel(px, py, color);\n`;
-        code += `    angle += 0.01;\n`;
-        code += `  }\n`;
-        code += `}\n`;
-    }
     
     DOM.generatedCode.textContent = code;
 }
+
 
 function copyCode() {
     navigator.clipboard.writeText(DOM.generatedCode.textContent)
         .then(() => alert('Codi copiat al portapapers'))
         .catch(err => console.error('Error en copiar: ', err));
 }
-function getColorAsHex(rgb565) {
-    // Verifica que el valor sigui vàlid
-    if (!rgb565 || typeof rgb565 !== 'string') {
-        console.error('Color invàlid:', rgb565);
-        return '#000000'; // Color negre per defecte
-    }
-    
-    try {
-        const value = parseInt(rgb565.substring(2), 16);
-        const r = (value >> 11) & 0x1F;
-        const g = (value >> 5) & 0x3F;
-        const b = value & 0x1F;
-        
-        const r8 = (r * 527 + 23) >> 6;
-        const g8 = (g * 259 + 33) >> 6;
-        const b8 = (b * 527 + 23) >> 6;
-        
-        return `#${((r8 << 16) | (g8 << 8) | b8).toString(16).padStart(6, '0')}`;
-    } catch (e) {
-        console.error('Error en conversió de color:', e);
-        return '#000000';
-    }
-}
+
 // Iniciar l'aplicació
 document.addEventListener('DOMContentLoaded', init);
+
+function loadFooter() {
+    fetch('footer.html')
+      .then(response => response.text())
+      .then(data => {
+        document.body.insertAdjacentHTML('beforeend', data);
+        // Set dynamic link based on current page
+        const link = document.getElementById('dynamic-link');
+        const linkText = document.getElementById('link-text');
+        if (window.location.pathname.includes('help.html')) {
+          link.href = 'index.html';
+          linkText.textContent = 'Back to Editor';
+          link.querySelector('i').className = 'fas fa-arrow-left';
+        } else {
+          link.href = 'help.html';
+          linkText.textContent = 'Help';
+          link.querySelector('i').className = 'fas fa-question-circle';
+        }
+      });
+  }
+  
+  document.addEventListener('DOMContentLoaded', loadFooter);

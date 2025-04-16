@@ -1,4 +1,4 @@
-/* Reset i estils generals */
+/* Reset and general styles */
 * {
     box-sizing: border-box;
     margin: 0;
@@ -11,9 +11,13 @@ body {
     color: #ecf0f1;
     line-height: 1.6;
     padding: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
 }
 
-/* Estructura principal */
+/* Main structure */
 .app-container {
     display: flex;
     flex-direction: column;
@@ -23,21 +27,23 @@ body {
     border-radius: 10px;
     overflow: hidden;
     box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
+    align-items: center;
 }
 
 header {
     background-color: #2c3e50;
     padding: 15px 20px;
+    text-align: center;
 }
 
 h1, h2 {
     color: #ecf0f1;
     margin-bottom: 15px;
+    text-align: center;
 }
 
 h1 {
     font-size: 1.5rem;
-    text-align: center;
 }
 
 h2 {
@@ -46,7 +52,7 @@ h2 {
     border-bottom: 1px solid #7f8c8d;
 }
 
-/* Barra d'eines */
+/* Toolbar */
 .toolbar {
     display: flex;
     flex-wrap: wrap;
@@ -91,16 +97,18 @@ h2 {
     border-radius: 3px;
 }
 
-/* Contingut principal */
+/* Main content */
 .main-content {
     display: flex;
+    align-items: center;
+    justify-content: center;
     flex: 1;
     gap: 15px;
     padding: 20px;
     background-color: #34495e;
 }
 
-/* Panell d'elements */
+/* Elements panel */
 .elements-panel {
     flex: 1;
     min-width: 200px;
@@ -108,6 +116,7 @@ h2 {
     background-color: #2c3e50;
     padding: 15px;
     border-radius: 5px;
+    align-self: flex-start;
 }
 
 #elements-list {
@@ -163,6 +172,9 @@ h2 {
     overflow: hidden;
     box-shadow: 0 0 15px rgba(0, 0, 0, 0.5);
     border: 8px solid #1a1a1a;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
 #preview-canvas {
@@ -186,7 +198,7 @@ h2 {
     color: #ecf0f1;
 }
 
-/* Panell de propietats */
+/* Properties panel */
 .properties-panel {
     flex: 1;
     min-width: 200px;
@@ -194,6 +206,7 @@ h2 {
     background-color: #2c3e50;
     padding: 15px;
     border-radius: 5px;
+    align-self: flex-start;
 }
 
 #properties-form {
@@ -252,11 +265,12 @@ h2 {
     background-color: #c0392b;
 }
 
-/* Panell de codi */
+/* Code panel */
 .code-panel {
     background-color: #2c3e50;
     padding: 20px;
     border-top: 1px solid #7f8c8d;
+    text-align: center;
 }
 
 .code-panel h2 {
@@ -288,7 +302,7 @@ h2 {
     white-space: pre-wrap;
 }
 
-/* Responsiu */
+/* Responsive */
 @media (max-width: 768px) {
     .main-content {
         flex-direction: column;
@@ -327,4 +341,38 @@ h2 {
 
 .color-select:hover {
     background-color: #3d566e;
+}
+
+.footer {
+    background-color: #2c3e50;
+    color: white;
+    padding: 20px 0;
+    text-align: center;
+    margin-top: 40px;
+    font-size: 0.9em;
+}
+
+.footer a {
+    color: #1abc9c;
+    text-decoration: none;
+    transition: color 0.3s;
+}
+
+.footer a:hover {
+    color: #16a085;
+    text-decoration: underline;
+}
+
+.footer-content {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+.footer-links {
+    margin-top: 10px;
+}
+
+.footer-links a {
+    margin: 0 10px;
 }
